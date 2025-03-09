@@ -24,6 +24,8 @@ jobs:
           git fetch origin
           
           # Create a new branch
+
+
           git checkout -b $BRANCH_NAME
       
       - name: Add period to README.md
@@ -61,3 +63,14 @@ jobs:
                        --body "This PR adds a period character to the README.md file." \
                        --base master \
                        --head $BRANCH_NAME
+
+      - name: Update Port Run Status
+        uses: port-labs/port-github-action@v1
+        with:
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          baseUrl: https://api.getport.io
+          operation: PATCH_RUN
+          runId: ${{ fromJson(inputs.port_context).runId }}
+          status: "SUCCESS"
+          logMessage: "Action completed successfully"
