@@ -5,6 +5,11 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      port_context:
+        description: 'Port context information'
+        required: false
+        type: string
 
 jobs:
   create-pr:
@@ -24,8 +29,6 @@ jobs:
           git fetch origin
           
           # Create a new branch
-
-
           git checkout -b $BRANCH_NAME
       
       - name: Add period to README.md
@@ -63,6 +66,7 @@ jobs:
                        --body "This PR adds a period character to the README.md file." \
                        --base master \
                        --head $BRANCH_NAME
+                       
 
       - name: Update Port Run Status
         uses: port-labs/port-github-action@v1
