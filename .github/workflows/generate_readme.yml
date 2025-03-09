@@ -3,7 +3,8 @@ name: Add Period to README via PR
 on:
   push:
     branches:
-      - main
+      - master
+  workflow_dispatch:
 
 jobs:
   create-pr:
@@ -51,5 +52,5 @@ jobs:
           # Create a pull request using GitHub CLI
           gh pr create --title "Add period to README.md" \
                        --body "This PR adds a period character to the README.md file." \
-                       --base main \
+                       --base master \
                        --head add-period-to-readme
