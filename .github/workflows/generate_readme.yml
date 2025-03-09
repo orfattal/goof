@@ -1,4 +1,4 @@
-name: Add Period to README via PR
+name: Add Period to README
 
 on:
   workflow_dispatch:
@@ -9,31 +9,22 @@ on:
         type: string
 
 jobs:
-  create-pr:
+  add-period:
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          # Use PAT instead of GITHUB_TOKEN to allow triggering other workflows
+          token: ${{ secrets.GITHUB_TOKEN }}
         
-      - name: Create new branch with timestamp
-        run: |
-          # Generate a unique branch name with timestamp
-          BRANCH_NAME="add-period-to-readme-$(date +%s)"
-          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
-          
-          # Fetch latest changes
-          git fetch origin
-          
-          # Create a new branch
-          git checkout -b $BRANCH_NAME
-      
       - name: Add period to README.md
         run: |
           # Append a period to the README.md file
           echo "." >> README.md
           
-      - name: Commit changes
+      - name: Commit and push changes
         run: |
           # Configure Git
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -45,24 +36,10 @@ jobs:
             exit 0
           fi
           
-          # Commit changes
+          # Commit and push changes directly to master branch
           git add README.md
           git commit -m "Add period to README.md"
-      
-      - name: Push changes
-        run: |
-          # Push the branch to the repository
-          git push --set-upstream origin $BRANCH_NAME
-          
-      - name: Create Pull Request
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Create a pull request using GitHub CLI
-          gh pr create --title "Add period to README.md" \
-                       --body "This PR adds a period character to the README.md file." \
-                       --base master \
-                       --head $BRANCH_NAME
+          git push origin master
                        
 
       - name: Update Port Run Status
