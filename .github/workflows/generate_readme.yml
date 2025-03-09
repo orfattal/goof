@@ -1,0 +1,55 @@
+name: Add Period to README via PR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Create new branch
+        run: |
+          # Create a new branch
+          git checkout -b add-period-to-readme
+      
+      - name: Add period to README.md
+        run: |
+          # Append a period to the README.md file
+          echo "." >> README.md
+          
+      - name: Commit changes
+        run: |
+          # Configure Git
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Check if there are changes to commit
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          
+          # Commit changes
+          git add README.md
+          git commit -m "Add period to README.md"
+      
+      - name: Push changes
+        run: |
+          # Push the branch to the repository
+          git push --set-upstream origin add-period-to-readme
+          
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create a pull request using GitHub CLI
+          gh pr create --title "Add period to README.md" \
+                       --body "This PR adds a period character to the README.md file." \
+                       --base main \
+                       --head add-period-to-readme
