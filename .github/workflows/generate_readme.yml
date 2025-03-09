@@ -14,10 +14,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
-      - name: Create new branch
+      - name: Create new branch with timestamp
         run: |
+          # Generate a unique branch name with timestamp
+          BRANCH_NAME="add-period-to-readme-$(date +%s)"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          
+          # Fetch latest changes
+          git fetch origin
+          
           # Create a new branch
-          git checkout -b add-period-to-readme
+          git checkout -b $BRANCH_NAME
       
       - name: Add period to README.md
         run: |
@@ -43,7 +50,7 @@ jobs:
       - name: Push changes
         run: |
           # Push the branch to the repository
-          git push --set-upstream origin add-period-to-readme
+          git push --set-upstream origin $BRANCH_NAME
           
       - name: Create Pull Request
         env:
@@ -53,4 +60,4 @@ jobs:
           gh pr create --title "Add period to README.md" \
                        --body "This PR adds a period character to the README.md file." \
                        --base master \
-                       --head add-period-to-readme
+                       --head $BRANCH_NAME
