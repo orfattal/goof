@@ -1,9 +1,6 @@
 name: Add Period to README via PR
 
 on:
-  push:
-    branches:
-      - master
   workflow_dispatch:
     inputs:
       port_context:
